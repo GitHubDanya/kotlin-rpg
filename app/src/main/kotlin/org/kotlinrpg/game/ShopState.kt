@@ -38,6 +38,7 @@ class ShopState(
         GameMessage("You have ${player.cash}$ to spend.", TextColor.GREEN).printFormatted()
 
         items.forEachIndexed { index, it ->
+            if (it is WearableItem && it.isWorn) return@forEachIndexed
             GameMessage("${index + 1} - ${it.price}$. ${it.name} - ${it.description}${if (it is WearableItem) " WEARABLE" else ""}").printFormatted()
         }
 

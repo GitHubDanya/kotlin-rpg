@@ -28,6 +28,11 @@ class Player(
         this.energy = other.energy
     }
 
+    fun useItem(item: UseableItem) {
+        item.apply(this)
+        usables.remove(item)
+    }
+
     fun showStats() {
         GameMessage("YOUR STATS:").printFormatted()
         GameMessage("LEVEL ${level}\n").printFormatted()

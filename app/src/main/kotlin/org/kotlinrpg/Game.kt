@@ -10,7 +10,7 @@ class Game {
         const val INITIAL_ENERGY = 100
         const val INITIAL_DAMAGE = 20
         const val INITIAL_CLUMSINESS = 0.2f
-        const val INITIAL_MONEY = 500f
+        const val INITIAL_MONEY = 30f
         const val INITIAL_UPGRADE_POINTS = 5
     }
 
