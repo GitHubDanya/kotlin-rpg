@@ -57,14 +57,6 @@ class ShopState(
         }
 
         player.cash -= item.price
-        when (item) {
-            is WearableItem -> {
-                player.wearables.addLast(item)
-            }
-
-            is UseableItem -> {
-                player.usables.addLast(item)
-            }
-        }
+        player.addItem(item)
     }
 }

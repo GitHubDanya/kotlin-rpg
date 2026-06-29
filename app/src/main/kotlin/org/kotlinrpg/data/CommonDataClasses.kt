@@ -9,6 +9,13 @@ data class GameAction(
     val execute: () -> Unit
 )
 
+data class GameAttack(
+    val name: String,
+    val energy: Int,
+    val message: GameMessage?,
+    val attack: (GameCharacter) -> GameMessage, // Returns an overview of the attack's effect
+)
+
 interface Item {
     val name: String
     val description: String

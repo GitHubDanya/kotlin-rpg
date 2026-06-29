@@ -1,8 +1,10 @@
 package org.kotlinrpg.data.characters
 
 import org.kotlinrpg.data.*
+import kotlin.random.*
 
 abstract class GameCharacter(
+    val name: String,
     var maxHealth: Int,
     var maxEnergy: Int,
     var damage: Int,
@@ -15,9 +17,24 @@ abstract class GameCharacter(
     var usables = mutableListOf<UseableItem>()
 
     fun addItem(item: Item) {
-        if (item is WearableItem) {
-            // TODO:
+        when (item) {
+            is WearableItem -> {
+                wearables.addLast(item)
+            }
+
+            is UseableItem -> {
+                usables.addLast(item)
+            }
         }
+    }
+
+    fun generateDamageAmount(attackAmount: Int = damage): Int {
+        val errorFactor = (damage * clumsiness).toInt()
+        return ((damage - errorFactor)..(damage + errorFactor)).random()
+    }
+
+    fun damage(amount: Int) {
+        health -= amount
     }
 
     fun heal(amount: Int) {
@@ -26,5 +43,22 @@ abstract class GameCharacter(
 
     fun energize(amount: Int) {
         energy = (energy + amount).coerceAtMost(maxEnergy)
+    }
+}
+
+abstract class GameEnemy(
+    name: String,
+    maxHealth: Int,
+    maxEnergy: Int,
+    damage: Int,
+    clumsiness: Float
+) : GameCharacter(name, maxHealth, maxEnergy, damage, clumsiness) {
+    abstract var attacks: MutableList<GameAttack>
+
+    fun getAvailAttackAtRandom(): GameAttack?
+    {
+        return attacks
+        .filter { it.energy <= energy }
+        .randomOrNull()
     }
 }

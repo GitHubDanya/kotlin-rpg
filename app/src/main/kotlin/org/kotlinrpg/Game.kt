@@ -15,6 +15,7 @@ class Game {
     }
 
     var player: Player = Player(
+        "Player",
         INITIAL_HEALTH,
         INITIAL_ENERGY,
         INITIAL_DAMAGE,
