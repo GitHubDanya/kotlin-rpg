@@ -4,13 +4,17 @@
 package org.kotlinrpg
 
 fun main() {
-    println(
-        """
-                   x
-        .-. _______|
-        |=|/     /  \
-        | |_____|_""_|
-        |_|_[X]_|____|
-        """.trimIndent(),
-    )
+    // println(
+    //     """
+    //                x
+    //     .-. _______|
+    //     |=|/     /  \
+    //     | |_____|_""_|
+    //     |_|_[X]_|____|
+    //     """.trimIndent(),
+    //)
+    //
+
+    val game = Game()
+    game.startGameLoop()
 }

@@ -10,6 +10,7 @@ class Player(
     damage: Int,
     clumsiness: Float,
     var cash: Float = 0f,
-    var upgradePoints: Int = 0
+    var upgradePoints: Int = 0,
+    var level: Int = 1,
 ) : GameCharacter(maxHealth, maxEnergy, damage, clumsiness) {
 }

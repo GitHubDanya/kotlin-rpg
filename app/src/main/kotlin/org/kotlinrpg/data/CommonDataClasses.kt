@@ -26,7 +26,7 @@ data class WearableItem(
     override val name: String,
     override val description: String,
     override val price: Float,
-    val isWorn: Boolean,
+    var isWorn: Boolean,
     val wear: (GameCharacter) -> Unit,
     val takeOff: (GameCharacter) -> Unit
 ) : Item

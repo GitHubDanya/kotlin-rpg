@@ -26,23 +26,22 @@ class ShopState(
     val player: Player
 ) : State(sceneRenderer, onFinish, returnState) {
     override val actions = mutableListOf<GameAction>(
-        GameAction('l', "List Available Items", true, ::listItems),
-        GameAction('b', "Buy Item", true, ::shopItem),
+        GameAction('s', "Shop Items", true, ::shopItem),
         GameAction('f', "Finish Shopping", true, ::finishShopping)
     )
 
     val items = Items.all
 
-
     override val sceneMessage = shopMessage
 
-    fun listItems() {}
     fun shopItem() {
+        GameMessage("You have ${player.cash}$ to spend.", TextColor.GREEN).printFormatted()
+
         items.forEachIndexed { index, it ->
-            GameMessage("${index + 1}. ${it.name} - ${it.description}${if (it is WearableItem) " WEARABLE" else ""}")
+            GameMessage("${index + 1} - ${it.price}$. ${it.name} - ${it.description}${if (it is WearableItem) " WEARABLE" else ""}").printFormatted()
         }
 
-        GameMessage("Select an item out of the list: ").printFormatted()
+        GameMessage("Select an item out of the list (by index): ").printFormatted()
         val item = readlnOrNull()?.toIntOrNull()
         if (item != null) buyItem(items[item - 1])
         else GameMessage("Item not found.").printFormatted()
@@ -55,6 +54,17 @@ class ShopState(
         if (player.cash < item.price) {
             GameMessage("You don't have enough cash!", TextColor.RED)
             return
+        }
+
+        player.cash -= item.price
+        when (item) {
+            is WearableItem -> {
+                player.wearables.addLast(item)
+            }
+
+            is UseableItem -> {
+                player.usables.addLast(item)
+            }
         }
     }
 }

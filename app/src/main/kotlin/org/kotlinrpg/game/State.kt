@@ -10,8 +10,9 @@ abstract class State(
     val sceneRenderer: SceneRenderer,
 
     // This function is a callback function for when the
-    // scene terminates.
-    // Usually, if nextstate is null, the game terminates.
+    // scene terminates, to let the central Game class know
+    // that a scene change occured. If nextState is null,
+    // the game ends.
     val onFinish: (nextState: State?) -> Unit,
 
     // The previous state can be passed here to know where
@@ -26,24 +27,32 @@ abstract class State(
     // of the scene.
     abstract val sceneMessage: GameMessage
 
-    init {
-        enter()
-    }
+    var sceneTerminated = false
 
     // This function is ran ater the scene initializes.
     open fun enter() {
         sceneRenderer.clearConsole()
         sceneRenderer.renderScene(this)
         sceneRenderer.showActions(this.actions)
+        sceneTerminated = false
     }
 
     // This function is called whenever the scene should terminate.
-    fun terminate(nextState: State?) = onFinish(nextState)
+    fun terminate(nextState: State?) {
+        if (nextState == null && returnState != null)
+            onFinish(returnState)
+        else
+            onFinish(nextState)
+
+        sceneTerminated = true
+    }
 
     // This function handles input at any stage of the game.
     open fun handleInput(input: Char) {
         var selectedAction = actions.find { it.key == input }
+        println()
         selectedAction?.execute?.invoke()
-        sceneRenderer.showActions(actions)
+        println()
+        if (!sceneTerminated) sceneRenderer.showActions(actions)
     }
 }

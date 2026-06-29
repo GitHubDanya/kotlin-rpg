@@ -10,7 +10,7 @@ class Game {
         const val INITIAL_ENERGY = 100
         const val INITIAL_DAMAGE = 20
         const val INITIAL_CLUMSINESS = 0.2f
-        const val INITIAL_MONEY = 5f
+        const val INITIAL_MONEY = 500f
         const val INITIAL_UPGRADE_POINTS = 5
     }
 
@@ -23,24 +23,43 @@ class Game {
         INITIAL_UPGRADE_POINTS
     )
 
-    var gameState: State? = null
+    var gameState: State
     var isRunning = true
 
     private var _sceneRenderer = SceneRenderer()
 
-    fun startGameLoop() {
+    init {
         gameState = RestState(
-            ::handleStateChange
+            _sceneRenderer,
+            ::handleStateChange,
+            player
         )
+    }
+
+    fun startGameLoop() {
+        initializeState(gameState)
 
         while (isRunning) {
-            val input: Char? = readlnOrNull()?.firstOrNull()
-            if (input != null) gameState?.handleInput(input)
+            val rawLine = readlnOrNull()
+
+            if (rawLine == null) {
+                println("Error: Standard input stream closed. Exiting game loop.")
+                isRunning = false
+                break
+            }
+
+            val input: Char? = rawLine.trim().firstOrNull()?.lowercaseChar()
+            //println("Detected input $input")
+
+            if (input != null) {
+                gameState.handleInput(input)
+            }
         }
     }
 
     fun initializeState(state: State) {
         gameState = state
+        state.enter()
     }
 
     fun handleStateChange(newState: State?) {

@@ -14,10 +14,11 @@ FIGHTING...
 val battleMessage = GameMessage(battleAscii, TextColor.RED)
 
 class BattleState(
+    sceneRenderer: SceneRenderer,
     onFinish: (nextState: State?) -> Unit,
+    returnState: State,
     player: Player,
-    sceneRenderer: SceneRenderer
-) : State(onFinish, sceneRenderer) {
+) : State(sceneRenderer, onFinish, returnState) {
     override val actions = mutableListOf<GameAction>(
         GameAction('a', "Attack", true, ::attack)
     )
