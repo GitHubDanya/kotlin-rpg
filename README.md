@@ -1,2 +1,7 @@
 # kotlin-rpg
-Text-based RPG project for learning Kotlin
+Generic text-based RPG game as a learning project
+
+### Building
+To build and run:
+
+`./gradlew run --console=plain`
