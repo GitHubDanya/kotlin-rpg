@@ -15,6 +15,9 @@ FIGHTING...
 val battleMessage = GameMessage(battleAscii, TextColor.RED)
 
 const val ENERGY_ATTACK_COST = 20
+const val RESTING_ENERGY_GAIN = 20
+const val TURN_ENERGY_GAIN = 5
+const val ENEMIES_COUNT = 2
 
 class BattleState(
     sceneRenderer: SceneRenderer,
@@ -31,7 +34,7 @@ class BattleState(
 
     override val sceneMessage = battleMessage
 
-    val enemies = generateEnemies(2)
+    val enemies = generateEnemies(ENEMIES_COUNT)
 
     val originalPlayer: Player = Player(player)
 
@@ -52,7 +55,7 @@ class BattleState(
     }
 
     fun generateEnemy(): GameEnemy {
-        val randomNumber = (1..2).random()
+        val randomNumber = (1..ENEMIES_COUNT).random()
         return when (randomNumber) {
             1 -> Troll(player = player)
             2 -> Goblin(player = player)
@@ -67,7 +70,7 @@ class BattleState(
         enemies.forEachIndexed { i, it ->
             GameMessage("     ${i}. ${it.name}     ").printFormatted()
             GameMessage("HP: ${it.health}/${it.maxHealth}").printFormatted()
-            GameMessage("EN: ${it.energy}/${it.maxEnergy}").printFormatted()
+            GameMessage("EN: ${it.energy}/${it.maxEnergy}\n").printFormatted()
         }
     }
 
@@ -103,9 +106,12 @@ class BattleState(
     }
 
     fun rest() {
-        GameMessage("You decide to rest. You replenish 20 energy points.\n", TextColor.CYAN).printFormatted()
+        GameMessage(
+            "You decide to rest. You replenish $RESTING_ENERGY_GAIN energy points.\n",
+            TextColor.CYAN
+        ).printFormatted()
 
-        player.energize(20)
+        player.energize(RESTING_ENERGY_GAIN)
 
         advanceTurn()
     }
@@ -113,7 +119,12 @@ class BattleState(
     fun advanceTurn() {
         letEnemiesAttack()
         energizeEnemies()
-        player.energize(5)
+        player.energize(TURN_ENERGY_GAIN)
+
+        if (player.health <= 0) {
+            terminate(null)
+        }
+
 
         if (enemies.isEmpty())
             finishFight()
@@ -142,7 +153,7 @@ class BattleState(
 
     private fun energizeEnemies() {
         enemies.forEach {
-            it.energize(5)
+            it.energize(TURN_ENERGY_GAIN)
         }
     }
 }

@@ -39,10 +39,7 @@ abstract class State(
 
     // This function is called whenever the scene should terminate.
     fun terminate(nextState: State?) {
-        if (nextState == null && returnState != null)
-            onFinish(returnState)
-        else
-            onFinish(nextState)
+        onFinish(nextState)
 
         sceneTerminated = true
     }

@@ -15,6 +15,10 @@ RESTING...
 
 val restMessage = GameMessage(restAscii)
 
+const val MEAL_PRICE = 10
+const val MEAL_HEALTH_GAIN = 40
+const val MEAL_ENERGY_GAIN = 40
+
 class RestState(
     sceneRenderer: SceneRenderer,
     onFinish: (nextState: State?) -> Unit,
@@ -22,6 +26,7 @@ class RestState(
 ) : State(sceneRenderer, onFinish) {
     override val actions = mutableListOf<GameAction>(
         GameAction('a', "Stats", true, ::showStats),
+        GameAction('e', "Buy Some Food", true, ::buyFood),
         GameAction('s', "Open Shop", true, ::openShop),
         GameAction('u', "Upgrade Skills", true, ::upgradeSkills),
         GameAction('i', "Inventory", true, ::manageInventory),
@@ -41,6 +46,26 @@ class RestState(
 
         sceneRenderer.showActions(this.actions)
         sceneTerminated = false
+    }
+
+    fun buyFood() {
+        GameMessage("You can spend $MEAL_PRICE coins to eat a meal.\nA meal grants the following:").printFormatted()
+        GameMessage("+${MEAL_HEALTH_GAIN}HP, +${MEAL_ENERGY_GAIN}EN", TextColor.GREEN).printFormatted()
+        GameMessage("Would you like to eat? [y/n]").printFormatted()
+
+        val prompt = readlnOrNull()?.firstOrNull()
+        if (prompt != 'y') return
+
+        if (player.cash < MEAL_PRICE) {
+            GameMessage("You dont have enough money to buy food.", TextColor.YELLOW).printFormatted()
+            return
+        }
+
+        player.cash -= MEAL_PRICE
+        player.heal(MEAL_HEALTH_GAIN)
+        player.energize(MEAL_ENERGY_GAIN)
+
+        GameMessage("You enjoy a meal and regain some strength.").printFormatted()
     }
 
     fun openShop() {
