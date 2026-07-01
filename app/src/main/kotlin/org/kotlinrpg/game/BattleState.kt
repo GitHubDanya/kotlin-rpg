@@ -28,11 +28,13 @@ const val winAscii = """
 val battleMessage = GameMessage(battleAscii, TextColor.RED)
 val winMessage = GameMessage(winAscii, TextColor.GREEN)
 
+// COMBAT
 const val ENERGY_ATTACK_COST = 20
 const val RESTING_ENERGY_GAIN = 20
 const val TURN_ENERGY_GAIN = 5
 const val ENEMIES_COUNT = 2
 
+// REWARDS
 val UPGRADE_POINT_REWARD_RANGE = 1..4
 const val COIN_REWARD_PER_ENEMY = 30
 const val COIN_REWARD_LEVEL_MULTIPLIER = 0.95f
@@ -43,6 +45,7 @@ class BattleState(
     returnState: State,
     val player: Player,
 ) : State(sceneRenderer, onFinish, returnState) {
+
     override val actions = mutableListOf<GameAction>(
         GameAction('f', "Check Field", true, ::displayEnemies),
         GameAction('s', "Stats", true, ::checkStats),
@@ -54,7 +57,6 @@ class BattleState(
     override val sceneMessage = battleMessage
 
     val enemies = generateEnemies(ENEMIES_COUNT)
-
     val originalPlayer: Player = Player(player)
 
     override fun enter() {
@@ -80,7 +82,6 @@ class BattleState(
             2 -> Goblin(player = player)
             else -> Troll(player = player)
         }
-
     }
 
     fun checkStats() = player.showStats()

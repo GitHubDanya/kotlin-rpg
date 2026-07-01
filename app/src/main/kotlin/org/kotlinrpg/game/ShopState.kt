@@ -30,9 +30,9 @@ class ShopState(
         GameAction('f', "Finish Shopping", true, ::finishShopping)
     )
 
-    val items = Items.all
-
     override val sceneMessage = shopMessage
+
+    val items = Items.all
 
     fun shopItem() {
         GameMessage("You have ${player.cash}$ to spend.", TextColor.GREEN).printFormatted()

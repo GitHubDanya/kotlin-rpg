@@ -28,9 +28,21 @@ class Player(
         this.energy = other.energy
     }
 
-    fun useItem(item: UseableItem) {
-        item.apply(this)
-        usables.remove(item)
+    fun useItem(item: Item) {
+        when (item) {
+            is UseableItem -> {
+                item.apply(this)
+                usables.remove(item)
+                GameMessage("Used a ${item.name}", TextColor.CYAN).printFormatted()
+            }
+
+            is WearableItem -> {
+                item.isWorn = !item.isWorn
+                if (item.isWorn) GameMessage("Equipped ${item.name}", TextColor.GREEN).printFormatted()
+                else GameMessage("Unequipped ${item.name}", TextColor.RED).printFormatted()
+
+            }
+        }
     }
 
     fun showStats() {

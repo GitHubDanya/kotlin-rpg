@@ -26,6 +26,7 @@ class SkillsState(
     returnState: State,
     val player: Player
 ) : State(sceneRenderer, onFinish, returnState) {
+
     override val actions = mutableListOf<GameAction>(
         GameAction('h', "Invest in Health", true, ::upgradeHealth),
         GameAction('e', "Invest in Energy", true, ::upgradeEnergy),
@@ -34,12 +35,14 @@ class SkillsState(
 
     override val sceneMessage = skillsMessage
 
-    override fun enter()
-    {
+    override fun enter() {
         sceneRenderer.clearConsole()
         sceneRenderer.renderScene(this)
 
-        if (player.upgradePoints != 0) GameMessage("You have ${player.upgradePoints} unspent upgarde points!", TextColor.CYAN).printFormatted()
+        if (player.upgradePoints != 0) GameMessage(
+            "You have ${player.upgradePoints} unspent upgarde points!",
+            TextColor.CYAN
+        ).printFormatted()
 
         sceneRenderer.showActions(this.actions)
         sceneTerminated = false
@@ -54,7 +57,10 @@ class SkillsState(
         upgradeAction()
         player.upgradePoints--
 
-        GameMessage("Upgraded successfully. ${player.upgradePoints} upgrade points left.", TextColor.GREEN).printFormatted()
+        GameMessage(
+            "Upgraded successfully. ${player.upgradePoints} upgrade points left.",
+            TextColor.GREEN
+        ).printFormatted()
     }
 
     fun upgradeHealth() = tryUpgrade { player.maxHealth += 5 }

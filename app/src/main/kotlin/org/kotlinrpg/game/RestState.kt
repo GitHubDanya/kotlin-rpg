@@ -61,11 +61,15 @@ class RestState(
             return
         }
 
+        eatFood()
+
+        GameMessage("You enjoy a meal and regain some strength.").printFormatted()
+    }
+
+    private fun eatFood() {
         player.cash -= MEAL_PRICE
         player.heal(MEAL_HEALTH_GAIN)
         player.energize(MEAL_ENERGY_GAIN)
-
-        GameMessage("You enjoy a meal and regain some strength.").printFormatted()
     }
 
     fun openShop() {
@@ -79,15 +83,8 @@ class RestState(
     }
 
     fun manageInventory() {
-        GameMessage("WEARABLES: ").printFormatted()
-        player.wearables.forEachIndexed { i, it ->
-            GameMessage(
-                "${i + 1}. ${it.name}",
-                if (it.isWorn) TextColor.CYAN else TextColor.WHITE
-            ).printFormatted()
-        }
-        GameMessage("\nUSABLES: ").printFormatted()
-        player.usables.forEachIndexed { i, it -> GameMessage("${i + 1}. ${it.name}").printFormatted() }
+        printCurrentInventory()
+
         GameMessage("Select a wearable item (w#) or a usable item (u#). e.g: w3 or u12:").printFormatted()
 
         val prompt = readlnOrNull()
@@ -104,30 +101,35 @@ class RestState(
             return
         }
 
+        // Convert human index (1, 2, 3...) to code index (0, 1, 2...)
         index--
 
-        val item: Item? = when (type) {
+        val item = getItemByIndexAndType(index, type)
+
+        if (item == null)
+            GameMessage("This item does not exist :(").printFormatted()
+        else
+            player.useItem(item)
+    }
+
+
+    fun printCurrentInventory() {
+        GameMessage("WEARABLES: ").printFormatted()
+        player.wearables.forEachIndexed { i, it ->
+            GameMessage(
+                "${i + 1}. ${it.name}",
+                if (it.isWorn) TextColor.CYAN else TextColor.WHITE
+            ).printFormatted()
+        }
+        GameMessage("\nUSABLES: ").printFormatted()
+        player.usables.forEachIndexed { i, it -> GameMessage("${i + 1}. ${it.name}").printFormatted() }
+    }
+
+    private fun getItemByIndexAndType(index: Int, type: Char): Item? {
+        return when (type) {
             'u' -> player.usables.getOrNull(index)
             'w' -> player.wearables.getOrNull(index)
             else -> null
-        }
-
-        if (item == null) {
-            GameMessage("This item does not exist :(").printFormatted()
-            return
-        }
-
-        when (item) {
-            is UseableItem -> {
-                item.apply(player)
-                GameMessage("Used a ${item.name}", TextColor.CYAN).printFormatted()
-            }
-
-            is WearableItem -> {
-                item.isWorn = !item.isWorn
-                if (item.isWorn) GameMessage("Equipped ${item.name}", TextColor.GREEN).printFormatted()
-                else GameMessage("Unequipped ${item.name}", TextColor.RED).printFormatted()
-            }
         }
     }
 
@@ -144,6 +146,4 @@ class RestState(
         val nextState = BattleState(sceneRenderer, onFinish, this, player)
         terminate(nextState)
     }
-
-
 }

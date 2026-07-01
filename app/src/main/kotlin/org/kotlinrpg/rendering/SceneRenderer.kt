@@ -3,7 +3,6 @@ package org.kotlinrpg.rendering
 import org.kotlinrpg.data.*
 import org.kotlinrpg.game.*
 
-
 class SceneRenderer {
     fun renderScene(state: State) {
         clearConsole()

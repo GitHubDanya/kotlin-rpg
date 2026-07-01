@@ -17,7 +17,6 @@ abstract class State(
 
     // The previous state can be passed here to know where
     // to route after terminating.
-
     val returnState: State? = null
 ) {
     // Each State has a list of actions that a player can do.

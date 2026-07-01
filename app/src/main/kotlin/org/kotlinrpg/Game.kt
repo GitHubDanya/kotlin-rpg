@@ -4,6 +4,18 @@ import org.kotlinrpg.data.*
 import org.kotlinrpg.game.*
 import org.kotlinrpg.rendering.SceneRenderer
 
+const val GAME_OVER_ASCII =
+    """
+           (`-')  _ <-. (`-')   (`-')  _                     (`-') (`-')  _   (`-')           
+    .->    (OO ).-/    \(OO )_  ( OO).-/         .->        _(OO ) ( OO).-/<-.(OO )           
+ ,---(`-') / ,---.  ,--./  ,-.)(,------.    (`-')----. ,--.(_/,-.\(,------.,------,)          
+'  .-(OO ) | \ /`.\ |   `.'   | |  .---'    ( OO).-.  '\   \ / (_/ |  .---'|   /`. '          
+|  | .-, \ '-'|_.' ||  |'.'|  |(|  '--.     ( _) | |  | \   /   / (|  '--. |  |_.' |          
+|  | '.(_/(|  .-.  ||  |   |  | |  .--'      \|  |)|  |_ \     /_) |  .--' |  .   .'          
+|  '-'  |  |  | |  ||  |   |  | |  `---.      '  '-'  '\-'\   /    |  `---.|  |\  \ ,-.,-.,-. 
+ `-----'   `--' `--'`--'   `--' `------'       `-----'     `-'     `------'`--' '--''-''-''-' 
+                """
+
 class Game {
     companion object {
         const val INITIAL_HEALTH = 100
@@ -50,7 +62,6 @@ class Game {
             }
 
             val input: Char? = rawLine.trim().firstOrNull()?.lowercaseChar()
-            //println("Detected input $input")
 
             if (input != null) {
                 gameState.handleInput(input)
@@ -65,21 +76,8 @@ class Game {
 
     fun handleStateChange(newState: State?) {
         if (newState == null) {
-
             isRunning = false
-            GameMessage(
-                """
-           (`-')  _ <-. (`-')   (`-')  _                     (`-') (`-')  _   (`-')           
-    .->    (OO ).-/    \(OO )_  ( OO).-/         .->        _(OO ) ( OO).-/<-.(OO )           
- ,---(`-') / ,---.  ,--./  ,-.)(,------.    (`-')----. ,--.(_/,-.\(,------.,------,)          
-'  .-(OO ) | \ /`.\ |   `.'   | |  .---'    ( OO).-.  '\   \ / (_/ |  .---'|   /`. '          
-|  | .-, \ '-'|_.' ||  |'.'|  |(|  '--.     ( _) | |  | \   /   / (|  '--. |  |_.' |          
-|  | '.(_/(|  .-.  ||  |   |  | |  .--'      \|  |)|  |_ \     /_) |  .--' |  .   .'          
-|  '-'  |  |  | |  ||  |   |  | |  `---.      '  '-'  '\-'\   /    |  `---.|  |\  \ ,-.,-.,-. 
- `-----'   `--' `--'`--'   `--' `------'       `-----'     `-'     `------'`--' '--''-''-''-' 
-                """, TextColor.RED
-            ).printFormatted()
-
+            GameMessage(GAME_OVER_ASCII, TextColor.RED).printFormatted()
             return
         }
 
