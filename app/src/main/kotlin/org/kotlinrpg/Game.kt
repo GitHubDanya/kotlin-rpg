@@ -4,44 +4,13 @@ import org.kotlinrpg.data.*
 import org.kotlinrpg.game.*
 import org.kotlinrpg.rendering.SceneRenderer
 
-const val GAME_OVER_ASCII =
-    """
-           (`-')  _ <-. (`-')   (`-')  _                     (`-') (`-')  _   (`-')           
-    .->    (OO ).-/    \(OO )_  ( OO).-/         .->        _(OO ) ( OO).-/<-.(OO )           
- ,---(`-') / ,---.  ,--./  ,-.)(,------.    (`-')----. ,--.(_/,-.\(,------.,------,)          
-'  .-(OO ) | \ /`.\ |   `.'   | |  .---'    ( OO).-.  '\   \ / (_/ |  .---'|   /`. '          
-|  | .-, \ '-'|_.' ||  |'.'|  |(|  '--.     ( _) | |  | \   /   / (|  '--. |  |_.' |          
-|  | '.(_/(|  .-.  ||  |   |  | |  .--'      \|  |)|  |_ \     /_) |  .--' |  .   .'          
-|  '-'  |  |  | |  ||  |   |  | |  `---.      '  '-'  '\-'\   /    |  `---.|  |\  \ ,-.,-.,-. 
- `-----'   `--' `--'`--'   `--' `------'       `-----'     `-'     `------'`--' '--''-''-''-' 
-                """
-
-class Game {
-    companion object {
-        const val INITIAL_HEALTH = 100
-        const val INITIAL_ENERGY = 100
-        const val INITIAL_DAMAGE = 20
-        const val INITIAL_CLUMSINESS = 0.2f
-        const val INITIAL_MONEY = 30f
-        const val INITIAL_UPGRADE_POINTS = 5
-    }
-
-    var player: Player = Player(
-        "Player",
-        INITIAL_HEALTH,
-        INITIAL_ENERGY,
-        INITIAL_DAMAGE,
-        INITIAL_CLUMSINESS,
-        INITIAL_MONEY,
-        INITIAL_UPGRADE_POINTS
-    )
-
-    var gameState: State
+class Game(
+    private var _sceneRenderer: SceneRenderer
+) {
+    var gameState: State? = null
     var isRunning = true
 
-    private var _sceneRenderer = SceneRenderer()
-
-    init {
+    fun initializeStartScene(player: Player) {
         gameState = RestState(
             _sceneRenderer,
             ::handleStateChange,
@@ -49,8 +18,13 @@ class Game {
         )
     }
 
-    fun startGameLoop() {
-        initializeState(gameState)
+    fun startGameLoop(player: Player) {
+        initializeStartScene(player)
+
+        val currentGameState = gameState
+            ?: throw NullPointerException("There was an error initializing the start state of the game.")
+
+        initializeState(currentGameState)
 
         while (isRunning) {
             val rawLine = readlnOrNull()
@@ -64,7 +38,7 @@ class Game {
             val input: Char? = rawLine.trim().firstOrNull()?.lowercaseChar()
 
             if (input != null) {
-                gameState.handleInput(input)
+                currentGameState.handleInput(input)
             }
         }
     }
@@ -77,7 +51,7 @@ class Game {
     fun handleStateChange(newState: State?) {
         if (newState == null) {
             isRunning = false
-            GameMessage(GAME_OVER_ASCII, TextColor.RED).printFormatted()
+            GameMessage(Constants.GAME_OVER_ASCII, TextColor.RED).printFormatted()
             return
         }
 

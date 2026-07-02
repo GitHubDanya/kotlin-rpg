@@ -3,21 +3,7 @@ package org.kotlinrpg.game
 import org.kotlinrpg.rendering.*
 import org.kotlinrpg.data.*
 
-const val shopAscii = """
-   _....._
-  ';-.--';'
-    }===={
-  .'  _|_ '.
- /:: (_|_`  \
-|::  ,_|_)   |
-\::.   |     /
- '::_     _-'
-     `````
-
-WELCOME TO THE SHOP!
-"""
-
-val shopMessage = GameMessage(shopAscii, TextColor.YELLOW)
+val shopMessage = GameMessage(Constants.SHOP_ASCII, TextColor.YELLOW)
 
 class ShopState(
     sceneRenderer: SceneRenderer,

@@ -5,39 +5,8 @@ import org.kotlinrpg.data.characters.*
 import org.kotlinrpg.rendering.SceneRenderer
 import kotlin.math.roundToInt
 
-const val battleAscii = """
-      /| ________________
-O|===|* >________________>
-      \|
-
-FIGHTING...
-"""
-
-const val winAscii = """
- __    __  _____   __  __      __      __  ______   __  __  __     
-/\ \  /\ \/\  __`\/\ \/\ \    /\ \  __/\ \/\__  _\ /\ \/\ \/\ \    
-\ `\`\\/'/\ \ \/\ \ \ \ \ \   \ \ \/\ \ \ \/_/\ \/ \ \ `\\ \ \ \   
- `\ `\ /'  \ \ \ \ \ \ \ \ \   \ \ \ \ \ \ \ \ \ \  \ \ , ` \ \ \  
-   `\ \ \   \ \ \_\ \ \ \_\ \   \ \ \_/ \_\ \ \_\ \__\ \ \`\ \ \_\ 
-     \ \_\   \ \_____\ \_____\   \ `\___x___/ /\_____\\ \_\ \_\/\_\
-      \/_/    \/_____/\/_____/    '\/__//__/  \/_____/ \/_/\/_/\/_/
-
-
-"""
-
-val battleMessage = GameMessage(battleAscii, TextColor.RED)
-val winMessage = GameMessage(winAscii, TextColor.GREEN)
-
-// COMBAT
-const val ENERGY_ATTACK_COST = 20
-const val RESTING_ENERGY_GAIN = 20
-const val TURN_ENERGY_GAIN = 5
-const val ENEMIES_COUNT = 2
-
-// REWARDS
-val UPGRADE_POINT_REWARD_RANGE = 1..4
-const val COIN_REWARD_PER_ENEMY = 30
-const val COIN_REWARD_LEVEL_MULTIPLIER = 0.95f
+val battleMessage = GameMessage(Constants.BATTLE_ASCII, TextColor.RED)
+val winMessage = GameMessage(Constants.WIN_ASCII, TextColor.GREEN)
 
 class BattleState(
     sceneRenderer: SceneRenderer,
@@ -56,7 +25,7 @@ class BattleState(
 
     override val sceneMessage = battleMessage
 
-    val enemies = generateEnemies(ENEMIES_COUNT)
+    val enemies = generateEnemies(Constants.ENEMIES_COUNT)
     val originalPlayer: Player = Player(player)
 
     override fun enter() {
@@ -76,7 +45,7 @@ class BattleState(
     }
 
     fun generateEnemy(): GameEnemy {
-        val randomNumber = (1..ENEMIES_COUNT).random()
+        val randomNumber = (1..Constants.ENEMIES_COUNT).random()
         return when (randomNumber) {
             1 -> Troll(player = player)
             2 -> Goblin(player = player)
@@ -127,7 +96,7 @@ class BattleState(
             return
         }
 
-        player.energy -= ENERGY_ATTACK_COST
+        player.energy -= Constants.ENERGY_ATTACK_COST
         val damage = player.generateDamageAmount()
         selected.damage(damage)
 
@@ -144,11 +113,11 @@ class BattleState(
 
     fun rest() {
         GameMessage(
-            "You decide to rest. You replenish $RESTING_ENERGY_GAIN energy points.\n",
+            "You decide to rest. You replenish $Constants.RESTING_ENERGY_GAIN energy points.\n",
             TextColor.CYAN
         ).printFormatted()
 
-        player.energize(RESTING_ENERGY_GAIN)
+        player.energize(Constants.RESTING_ENERGY_GAIN)
 
         advanceTurn()
     }
@@ -156,7 +125,7 @@ class BattleState(
     fun advanceTurn() {
         letEnemiesAttack()
         energizeEnemies()
-        player.energize(TURN_ENERGY_GAIN)
+        player.energize(Constants.TURN_ENERGY_GAIN)
 
         if (player.health <= 0) terminate(null)
 
@@ -180,8 +149,9 @@ class BattleState(
     }
 
     private fun generateAndRewardRewards() {
-        val rewardedUpPoints = UPGRADE_POINT_REWARD_RANGE.random()
-        var rewardedCash = (COIN_REWARD_PER_ENEMY * ENEMIES_COUNT) * (COIN_REWARD_LEVEL_MULTIPLIER * player.level)
+        val rewardedUpPoints = Constants.UPGRADE_POINT_REWARD_RANGE.random()
+        var rewardedCash =
+            (Constants.COIN_REWARD_PER_ENEMY * Constants.ENEMIES_COUNT) * (Constants.COIN_REWARD_LEVEL_MULTIPLIER * player.level)
         rewardedCash = (rewardedCash * 100).roundToInt() / 100.0f
 
         player.cash += rewardedCash
@@ -212,7 +182,7 @@ class BattleState(
 
     private fun energizeEnemies() {
         enemies.forEach {
-            it.energize(TURN_ENERGY_GAIN)
+            it.energize(Constants.TURN_ENERGY_GAIN)
         }
     }
 }

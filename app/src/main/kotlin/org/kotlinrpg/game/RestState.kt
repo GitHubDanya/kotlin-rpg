@@ -3,17 +3,7 @@ package org.kotlinrpg.game
 import org.kotlinrpg.data.*
 import org.kotlinrpg.rendering.*
 
-const val restAscii = """
-           x
-.-. _______|
-|=|/     /  \
-| |_____|_""_|
-|_|_[X]_|____|
-
-RESTING...
-"""
-
-val restMessage = GameMessage(restAscii)
+val restMessage = GameMessage(Constants.REST_ASCII)
 
 const val MEAL_PRICE = 10
 const val MEAL_HEALTH_GAIN = 40

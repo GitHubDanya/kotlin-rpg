@@ -4,21 +4,7 @@ import org.kotlinrpg.Game
 import org.kotlinrpg.data.*
 import org.kotlinrpg.rendering.SceneRenderer
 
-const val skillsAscii =
-    """
-|     .-.
-|    /   \         .-.
-|   /     \       /   \       .-.     .-.     _   _
-+--/-------\-----/-----\-----/---\---/---\---/-\-/-\/\/---
-| /         \   /       \   /     '-'     '-'
-|/           '-'         '-'
-
-UPGRADE YOUR SKILLS...
-(1 UPGRADE POINT INCREASES A SKILL'S CEILING BY 5)
-
-"""
-
-val skillsMessage = GameMessage(skillsAscii, TextColor.CYAN)
+val skillsMessage = GameMessage(Constants.SKILLS_ASCII, TextColor.CYAN)
 
 class SkillsState(
     sceneRenderer: SceneRenderer,
